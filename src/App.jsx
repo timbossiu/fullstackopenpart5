@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notificationMessage, setNotificationMessage] = useState(null)
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  const [newUrl, setNewUrl] = useState('')  
 
 
   const handleLogin = async (event) => {
@@ -30,9 +31,9 @@ const App = () => {
       setPassword('')
       setUsername('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setNotificationMessage('Wrong credentials')
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotificationMessage(null)
       }, 5000)
     }
   }
@@ -53,6 +54,10 @@ const App = () => {
     const returnedBlog = await blogService.create(blogObject)
     if (returnedBlog) {
       setBlogs(blogs.concat(returnedBlog))
+      setNotificationMessage(`a new blog ${newTitle} by ${newAuthor} added`)
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000)
     }
     setNewAuthor('')
     setNewTitle('')
@@ -102,6 +107,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
+        <Notification message={notificationMessage} type="error"/>
         <form onSubmit={handleLogin}>
           <div>
               username
@@ -130,6 +136,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={notificationMessage} type="success"/>
       <p>{user.name} logged in<button onClick={() => handleLogout()}>logout</button></p>
       {blogForm()}
       {blogs.map(blog =>
