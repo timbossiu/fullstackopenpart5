@@ -12,6 +12,7 @@ const Blog = ({ blog }) => {
   }
 
   const [visible, setVisible] = useState(false)
+  const [localBlog, setBlog] = useState(blog)
 
   const showWhenVisible = { display: visible ? '' : 'none' }
 
@@ -21,19 +22,23 @@ const Blog = ({ blog }) => {
       ...blog,
       likes: blog.likes + 1
     }
-    blogService.modifyBlog(updatedBlog)
+    blogService.modifyBlog(updatedBlog).then(returnedBlog => {
+      setBlog(returnedBlog)
+    }).catch(error => {
+      console.error('Error updating blog:', error)
+    })
   }
 
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title} {blog.author} <button onClick={() => setVisible(true)}>view</button> 
+        {localBlog.title} {localBlog.author} <button onClick={() => setVisible(true)}>view</button> 
       </div>
       <div style={showWhenVisible}>
-        <p>{blog.url}</p>
-        <p>likes {blog.likes} <button onClick={() => addLike(blog)}>like</button></p>
+        <p>{localBlog.url}</p>
+        <p>likes {localBlog.likes} <button onClick={() => addLike(localBlog)}>like</button></p>
         <button onClick={() => setVisible(false)}>hide</button>
-        <p>{blog.user ? blog.user.name : 'no user'}</p>
+        <p>{localBlog.user ? localBlog.user.name : 'no user'}</p>
       </div> 
     </div> 
   )}
