@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, currentUser, removeBlog }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -15,6 +15,10 @@ const Blog = ({ blog }) => {
   const [localBlog, setBlog] = useState(blog)
 
   const showWhenVisible = { display: visible ? '' : 'none' }
+  const isUserOwner = localBlog.user && localBlog.user.name === currentUser.name
+  const showWhenUserIsOwner = { display: isUserOwner ? '' : 'none' }
+
+  blogService.setToken(currentUser.token)
 
   const addLike = (blog) => {
     console.log('adding like to blog', blog)
@@ -29,6 +33,16 @@ const Blog = ({ blog }) => {
     })
   }
 
+  const deleteBlog = (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      blogService.deleteBlog(blog.id).then(() => {
+        removeBlog(blog)
+      }).catch(error => {
+        console.error('Error deleting blog:', error)
+      })
+    }
+  }
+
   return (
     <div style={blogStyle}>
       <div>
@@ -39,8 +53,12 @@ const Blog = ({ blog }) => {
         <p>likes {localBlog.likes} <button onClick={() => addLike(localBlog)}>like</button></p>
         <button onClick={() => setVisible(false)}>hide</button>
         <p>{localBlog.user ? localBlog.user.name : 'no user'}</p>
+        <div style={showWhenUserIsOwner}>
+          <button onClick={() => deleteBlog(localBlog)}>delete</button>
+        </div>
       </div> 
     </div> 
-  )}
+  )
+}
 
 export default Blog

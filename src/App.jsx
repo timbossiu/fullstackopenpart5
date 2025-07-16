@@ -55,6 +55,10 @@ const App = () => {
       })
   }
 
+  const removeBlog = (blog) => {
+    blogs.filter(blogItem => blogItem.id !== blog.id)
+  }
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -109,7 +113,7 @@ const App = () => {
         <BlogForm createBlog={addBlog}></BlogForm>  
       </Togglable>
       {blogs.sort((a, b) => a.likes - b.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} currentUser={user} removeBlog={removeBlog} />
       )}
     </div>
   )
