@@ -56,7 +56,11 @@ const App = () => {
   }
 
   const removeBlog = (blog) => {
-    blogs.filter(blogItem => blogItem.id !== blog.id)
+    setBlogs(blogs.filter(blogItem => blogItem.id !== blog.id))
+  }
+
+  const updateBlogLikes = (blog) => {
+    setBlogs(blogs.map(b => b.likes))
   }
 
   useEffect(() => {
