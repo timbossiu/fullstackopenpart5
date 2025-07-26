@@ -9,8 +9,8 @@ import BlogForm from './components/BlogForm'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [notificationMessage, setNotificationMessage] = useState(null)
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const blogFormRef = useRef()
 
@@ -43,7 +43,7 @@ const App = () => {
   }
 
   const addBlog = (blogObject) => {
-    blogFormRef.current.toggleVisibility();
+    blogFormRef.current.toggleVisibility()
     blogService.create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
@@ -51,7 +51,6 @@ const App = () => {
         setTimeout(() => {
           setNotificationMessage(null)
         }, 5000)
-        
       })
   }
 
@@ -66,8 +65,8 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
-  }, [])
+    )
+  },[])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -85,25 +84,14 @@ const App = () => {
         <Notification message={notificationMessage} type="error"/>
         <form onSubmit={handleLogin}>
           <div>
-              username
-                <input
-                type="text"
-                value={username}
-                name="Username"
-                onChange={({ target }) => setUsername(target.value)}
-              />
-            </div>
-            <div>
-              password
-                <input
-                type="password"
-                value={password}
-                name="Password"
-                onChange={({ target }) => setPassword(target.value)}
-              />
-            </div>
-            <button type="submit">login</button>
-      </form>
+              username <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)}/>
+          </div>
+          <div>
+            password
+            <input type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)}/>
+          </div>
+          <button type="submit">login</button>
+        </form>
       </div>
     )
   }
@@ -114,7 +102,7 @@ const App = () => {
       <Notification message={notificationMessage} type="success"/>
       <p>{user.name} logged in<button onClick={() => handleLogout()}>logout</button></p>
       <Togglable buttonLabel = 'new Blog' ref = {blogFormRef}>
-        <BlogForm createBlog={addBlog}></BlogForm>  
+        <BlogForm createBlog={addBlog}></BlogForm>
       </Togglable>
       {blogs.sort((a, b) => a.likes - b.likes).map(blog =>
         <Blog key={blog.id} blog={blog} currentUser={user} removeBlog={removeBlog} />

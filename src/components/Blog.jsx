@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
+import PropTypes from 'prop-types'
+
 const Blog = ({ blog, currentUser, removeBlog }) => {
 
   const blogStyle = {
@@ -46,7 +48,7 @@ const Blog = ({ blog, currentUser, removeBlog }) => {
   return (
     <div style={blogStyle}>
       <div>
-        {localBlog.title} {localBlog.author} <button onClick={() => setVisible(true)}>view</button> 
+        {localBlog.title} {localBlog.author} <button onClick={() => setVisible(true)}>view</button>
       </div>
       <div style={showWhenVisible}>
         <p>{localBlog.url}</p>
@@ -56,9 +58,13 @@ const Blog = ({ blog, currentUser, removeBlog }) => {
         <div style={showWhenUserIsOwner}>
           <button onClick={() => deleteBlog(localBlog)}>delete</button>
         </div>
-      </div> 
-    </div> 
+      </div>
+    </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired
 }
 
 export default Blog
