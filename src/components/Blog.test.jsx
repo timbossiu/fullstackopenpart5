@@ -42,3 +42,25 @@ test('does show <Blog> likes and url after clicking button', async () => {
   expect(showSection).toHaveTextContent('https://example.com')
   expect(showSection).toHaveTextContent('likes 5')
 })
+
+test('clicks on <Blog> likes two times', async () => {
+  const user = userEvent.setup()
+  const blog = {
+    title: 'This is a title',
+    author: 'This is an author',
+    url: 'https://example.com',
+    likes: 5,
+  }
+
+  const currentUser = vi.fn()
+  const updateLikes = vi.fn()
+
+  render(<Blog blog={blog} currentUser={currentUser} updateBlogLikes={updateLikes} />)
+
+  const showButton = screen.getByText('view')
+  await user.click(showButton)
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+  expect(updateLikes.mock.calls).toHaveLength(2)
+})

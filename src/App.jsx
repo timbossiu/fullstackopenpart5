@@ -58,8 +58,14 @@ const App = () => {
     setBlogs(blogs.filter(blogItem => blogItem.id !== blog.id))
   }
 
-  const updateBlogLikes = (blog) => {
-    setBlogs(blogs.map(b => b.likes))
+  const updateBlogLikes = (updatedBlog) => {
+    blogService.modifyBlog(updatedBlog).then(returnedBlog => {(
+      setBlogs(blogs => blogs
+        .map(b => b.id === returnedBlog.id ? { ...b, likes: returnedBlog.likes } : b)
+        .sort((a, b) => b.likes - a.likes)))
+    }).catch(error => {
+      console.error('Error updating blog:', error)
+    })
   }
 
   useEffect(() => {
@@ -105,7 +111,7 @@ const App = () => {
         <BlogForm createBlog={addBlog}></BlogForm>
       </Togglable>
       {blogs.sort((a, b) => a.likes - b.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} currentUser={user} removeBlog={removeBlog} />
+        <Blog key={blog.id} blog={blog} currentUser={user} removeBlog={removeBlog} updateBlogLikes={updateBlogLikes} />
       )}
     </div>
   )

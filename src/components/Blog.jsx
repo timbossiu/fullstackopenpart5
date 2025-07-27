@@ -3,7 +3,7 @@ import blogService from '../services/blogs'
 
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, currentUser, removeBlog }) => {
+const Blog = ({ blog, currentUser, removeBlog, updateBlogLikes }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -28,11 +28,8 @@ const Blog = ({ blog, currentUser, removeBlog }) => {
       ...blog,
       likes: blog.likes + 1
     }
-    blogService.modifyBlog(updatedBlog).then(returnedBlog => {
-      setBlog(returnedBlog)
-    }).catch(error => {
-      console.error('Error updating blog:', error)
-    })
+    updateBlogLikes(updatedBlog)
+    setBlog(updatedBlog)
   }
 
   const deleteBlog = (blog) => {
