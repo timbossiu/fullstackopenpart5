@@ -48,9 +48,9 @@ const Blog = ({ blog, currentUser, removeBlog }) => {
   return (
     <div className='blog-class' style={blogStyle}>
       <div className='blog-title-author'>
-        {localBlog.title} {localBlog.author} <button onClick={() => setVisible(true)}>view</button>
+        {localBlog.title} {localBlog.author} <button className='show-button' onClick={() => setVisible(true)}>view</button>
       </div>
-      <div style={showWhenVisible}>
+      <div className='show-section' style={showWhenVisible}>
         <p>{localBlog.url}</p>
         <p>likes {localBlog.likes} <button onClick={() => addLike(localBlog)}>like</button></p>
         <button onClick={() => setVisible(false)}>hide</button>
