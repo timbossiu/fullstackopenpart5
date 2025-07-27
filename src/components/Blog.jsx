@@ -46,8 +46,8 @@ const Blog = ({ blog, currentUser, removeBlog }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div>
+    <div className='blog-class' style={blogStyle}>
+      <div className='blog-title-author'>
         {localBlog.title} {localBlog.author} <button onClick={() => setVisible(true)}>view</button>
       </div>
       <div style={showWhenVisible}>
