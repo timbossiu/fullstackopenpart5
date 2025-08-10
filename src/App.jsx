@@ -90,11 +90,11 @@ const App = () => {
         <Notification message={notificationMessage} type="error"/>
         <form onSubmit={handleLogin}>
           <div>
-              username <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)}/>
+              username <input data-testid = 'username-input' type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)}/>
           </div>
           <div>
             password
-            <input type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)}/>
+            <input data-testid = 'password-input' type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)}/>
           </div>
           <button type="submit">login</button>
         </form>
