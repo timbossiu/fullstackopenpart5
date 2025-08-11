@@ -40,5 +40,23 @@ describe('Blog app', () => {
 
         await expect(page.getByText('Matti Luukkainen logged in')).not.toBeVisible()
     })
+
+    describe('When logged in', () => {
+      beforeEach(async ({ page }) => {
+        await page.getByTestId('username-input').fill('mluukkai')
+        await page.getByTestId('password-input').fill('salainen')
+        await page.getByRole('button', { name: 'login' }).click()
+      })
+
+      test('a new blog can be created', async ({ page }) => {
+        await page.getByRole('button', { name: 'new blog' }).click()
+        await page.getByTestId('title-input').fill('A blog created from playwright')
+        await page.getByTestId('author-input').fill('Playwright Author')
+        await page.getByTestId('url-input').fill('https://example.com')
+        await page.getByRole('button', { name: 'save' }).click()
+
+        await expect(page.getByText('A blog created from playwright by Playwright Author')).toBeVisible()
+      })
+    })
   })
 })
