@@ -24,6 +24,7 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
+      window.localStorage.setItem('loggedTimestamp', Date.now())
 
       blogService.setToken(user.token)
       setUser(user)
@@ -33,7 +34,7 @@ const App = () => {
       setNotificationMessage('Wrong credentials')
       setTimeout(() => {
         setNotificationMessage(null)
-      }, 5000)
+      }, 1000)
     }
   }
 
@@ -50,7 +51,7 @@ const App = () => {
         setNotificationMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
         setTimeout(() => {
           setNotificationMessage(null)
-        }, 5000)
+        }, 1000)
       })
   }
 
@@ -75,11 +76,19 @@ const App = () => {
   },[])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+    const loggedTimestamp = window.localStorage.getItem('loggedTimestamp')
+    if (loggedTimestamp && Date.now() - loggedTimestamp > 3600000) {
+      window.localStorage.removeItem('loggedBlogappUser')
+      setUser(null)
+      return
+    } // 1 hour
+    else {
+      const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+      if (loggedUserJSON) {
+        const user = JSON.parse(loggedUserJSON)
+        setUser(user)
+        blogService.setToken(user.token)
+      }
     }
   }, [])
 
