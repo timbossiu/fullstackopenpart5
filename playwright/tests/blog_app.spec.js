@@ -10,6 +10,12 @@ describe('Blog app', () => {
         name: 'Matti Luukkainen',
         password: 'salainen'
       }})
+    await request.post('/api/users', {
+      data: {
+        username: 'testuser',
+        name: 'Test User',
+        password: 'test'
+      }})
     await page.goto('/')
   })
 
@@ -59,7 +65,15 @@ describe('Blog app', () => {
         await page.getByRole('button', { name: 'view' }).click()
         page.on('dialog', dialog => dialog.accept());
         await page.getByRole('button', { name: 'delete' }).click()
-        await expect(page.getByText('A blog to delete by Playwright Author')).not.toBeVisible()
+        await expect(page.getByText('A blog to delete by Playwright Author', { exact: true })).not.toBeVisible()
+      })
+
+      test('a blog cannot be deleted by another user', async ({ page }) => {
+        await createBlog(page, 'A blog to not delete', 'Playwright Author', 'https://example.com')
+        await page.getByRole('button', { name: 'logout' }).click()
+        await loginWith(page, 'testuser', 'test')
+        await page.getByRole('button', { name: 'view' }).click()
+        await expect(page.getByRole('button', { name: 'delete'})).not.toBeVisible()
       })
     })
   })

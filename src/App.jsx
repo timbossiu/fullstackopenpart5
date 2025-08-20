@@ -80,8 +80,7 @@ const App = () => {
     if (loggedTimestamp && Date.now() - loggedTimestamp > 3600000) {
       window.localStorage.removeItem('loggedBlogappUser')
       setUser(null)
-      return
-    } // 1 hour
+    }
     else {
       const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
       if (loggedUserJSON) {
