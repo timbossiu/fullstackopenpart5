@@ -50,7 +50,7 @@ describe('Blog app', () => {
 
       test('a new blog can be created', async ({ page }) => {
         createBlog(page, 'A blog created from playwright', 'Playwright Author', 'https://example.com')
-        await expect(page.getByText('A blog created from playwright by Playwright Author')).toBeVisible()
+        await expect(page.getByText('A blog created from playwright Playwright Author')).toBeVisible()
       })
 
       test('a blog can be liked', async ({ page }) => {
@@ -65,7 +65,7 @@ describe('Blog app', () => {
         await page.getByRole('button', { name: 'view' }).click()
         page.on('dialog', dialog => dialog.accept());
         await page.getByRole('button', { name: 'delete' }).click()
-        await expect(page.getByText('A blog to delete by Playwright Author', { exact: true })).not.toBeVisible()
+        await expect(page.getByText('A blog to delete Playwright Author', { exact: true })).not.toBeVisible()
       })
 
       test('a blog cannot be deleted by another user', async ({ page }) => {
@@ -74,6 +74,32 @@ describe('Blog app', () => {
         await loginWith(page, 'testuser', 'test')
         await page.getByRole('button', { name: 'view' }).click()
         await expect(page.getByRole('button', { name: 'delete'})).not.toBeVisible()
+      })
+
+      test('blogs are sorted by their likes amount', async ({ page }) => {
+        await createBlog(page, 'first blog', 'Playwright Author', 'https://example.com')
+        await page.waitForTimeout(500) // wait for the blogs to be rendered
+        await createBlog(page, 'second blog', 'Playwright Author', 'https://example.com')
+        await page.waitForTimeout(500) // wait for the blogs to be rendered
+        await createBlog(page, 'third blog', 'Playwright Author', 'https://example.com')
+        await page.waitForTimeout(500) // wait for the blogs to be rendered
+
+        const thirdBlog = page.locator('.blog-class').last()
+
+        await thirdBlog.getByRole('button', { name: 'view' }).click()
+        await thirdBlog.getByRole('button', { name: 'like' }).click()
+        await thirdBlog.getByRole('button', { name: 'like' }).click()
+
+        await thirdBlog.getByRole('button', { name: 'hide' }).click()
+
+        const secondBlog = await page.getByText('second blog Playwright Author')
+
+        await secondBlog.getByRole('button', { name: 'view' }).click()
+        await page.getByRole('button', { name: 'like' }).click()
+
+        await expect(page.locator('.blog-class').first()).toContainText('third blog Playwright Author')
+        await expect(page.locator('.blog-class').nth(1)).toContainText('second blog Playwright Author')
+        await expect(page.locator('.blog-class').last()).toContainText('first blog Playwright Author')
       })
     })
   })
